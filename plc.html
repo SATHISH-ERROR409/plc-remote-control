@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>PLC Remote Control</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- MQTT WebSocket Library -->
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #f2f2f2;
+      margin-top: 60px;
+    }
+    h2 {
+      color: #333;
+    }
+    button {
+      width: 200px;
+      height: 60px;
+      font-size: 22px;
+      margin: 15px;
+      border: none;
+      border-radius: 10px;
+      color: white;
+      cursor: pointer;
+    }
+    .on {
+      background-color: green;
+    }
+    .off {
+      background-color: red;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 16px;
+      color: blue;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h2>PLC REMOTE CONTROL</h2>
+
+  <button class="on" onclick="sendON()">Y0 ON</button><br>
+  <button class="off" onclick="sendOFF()">Y0 OFF</button>
+
+  <div id="status">Connecting to MQTT...</div>
+
+  <script>
+    /* ===== HIVE MQ DETAILS ===== */
+    const broker = "wss://c879ec0676ad4ba3ac2c1170c0ebdb42.s1.eu.hivemq.cloud:8884/mqtt";
+    const options = {
+      username: "PLCWDS",
+      password: "Plcwds123",
+      clean: true,
+      connectTimeout: 4000
+    };
+
+    /* ===== CONNECT TO MQTT ===== */
+    const client = mqtt.connect(broker, options);
+
+    client.on("connect", function () {
+      document.getElementById("status").innerHTML = "Connected to Cloud";
+    });
+
+    client.on("error", function (error) {
+      document.getElementById("status").innerHTML = "Connection Error";
+      console.log(error);
+    });
+
+    /* ===== BUTTON FUNCTIONS ===== */
+    function sendON() {
+      client.publish("plc/control", "ON");
+    }
+
+    function sendOFF() {
+      client.publish("plc/control", "OFF");
+    }
+  </script>
+
+</body>
+</html>
