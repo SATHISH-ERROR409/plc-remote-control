@@ -1,0 +1,1387 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Water Grid SCADA System</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0B0F14;
+            color: #E5E7EB;
+        }
+
+        html, body, .app-wrapper {
+            height: 100%;
+            width: 100%;
+        }
+
+        .app-wrapper {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            align-items: stretch;
+            min-height: 100%;
+            width: 100%;
+            background: #0B0F14;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, #0a1628 0%, #000000 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 4rem 5rem;
+            border-right: 1px solid rgba(0, 229, 255, 0.15);
+            position: relative;
+        }
+
+        .login-left::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 229, 255, 0.08) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .login-title-section {
+            position: relative;
+            z-index: 1;
+            text-align: left;
+            max-width: 600px;
+        }
+
+        .login-icon {
+            display: none;
+        }
+
+        .login-title {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+            line-height: 1.2;
+        }
+
+        .login-subtitle {
+            font-size: 1.15rem;
+            color: #94a3b8;
+            line-height: 1.8;
+            margin-bottom: 2.5rem;
+        }
+
+        .login-box {
+            flex: 1;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+
+        .login-form-container {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 229, 255, 0.25);
+            border-radius: 28px;
+            padding: 3rem 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(0, 229, 255, 0.15);
+        }
+
+        .login-header {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .login-lock-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.15), rgba(0, 255, 156, 0.15));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(0, 229, 255, 0.3);
+        }
+
+        .login-form-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .login-form-subtitle {
+            font-size: 0.95rem;
+            color: #94a3b8;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #00E5FF;
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 1.125rem;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.25), rgba(0, 229, 255, 0.15));
+            border: 1px solid rgba(0, 229, 255, 0.5);
+            border-radius: 12px;
+            color: #00E5FF;
+            font-size: 1.05rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.35), rgba(0, 229, 255, 0.25));
+            border-color: #00E5FF;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 229, 255, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(0, 229, 255, 0.1);
+        }
+
+        .login-footer-text {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .status-indicators-login {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 0;
+        }
+
+        .status-item-login {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1rem;
+            color: #94a3b8;
+        }
+
+        .status-item-login::before {
+            content: '✓';
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 229, 255, 0.15);
+            border: 1px solid rgba(0, 229, 255, 0.4);
+            border-radius: 6px;
+            color: #00E5FF;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .status-dot-login {
+            display: none;
+        }
+
+        /* Dashboard Styles */
+        .dashboard-wrapper {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            overflow-y: auto;
+        }
+
+        .dashboard-wrapper.active {
+            display: flex;
+        }
+
+        .header-bar {
+            background: linear-gradient(135deg, #111827 0%, #1a1f2e 100%);
+            padding: 1.25rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid rgba(0, 229, 255, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .dashboard-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00E5FF;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .status-indicators {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .status-dot.online {
+            background: #00FF9C;
+            box-shadow: 0 0 12px #00FF9C;
+        }
+
+        .status-dot.active {
+            background: #00E5FF;
+            box-shadow: 0 0 12px #00E5FF;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.95); }
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .datetime-display {
+            font-size: 0.95rem;
+            color: #9CA3AF;
+            font-family: 'Courier New', monospace;
+        }
+
+        .logout-btn {
+            padding: 0.625rem 1.5rem;
+            background: rgba(255, 76, 76, 0.15);
+            border: 1px solid rgba(255, 76, 76, 0.4);
+            border-radius: 8px;
+            color: #FF4C4C;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 76, 76, 0.25);
+            border-color: #FF4C4C;
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #00E5FF;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: linear-gradient(180deg, #00E5FF 0%, #00FF9C 100%);
+            border-radius: 2px;
+        }
+
+        .valve-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .valve-card {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(26, 31, 46, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .valve-card:hover {
+            border-color: rgba(0, 229, 255, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(0, 229, 255, 0.2);
+        }
+
+        .valve-card.active {
+            border-color: rgba(0, 255, 156, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 255, 156, 0.15);
+        }
+
+        .valve-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .valve-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #E5E7EB;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .valve-status-led {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #FF4C4C;
+            box-shadow: 0 0 16px #FF4C4C;
+            transition: all 0.3s ease;
+        }
+
+        .valve-status-led.active {
+            background: #00FF9C;
+            box-shadow: 0 0 20px #00FF9C;
+            animation: glow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px #00FF9C; }
+            50% { box-shadow: 0 0 30px #00FF9C, 0 0 40px #00FF9C; }
+        }
+
+        .valve-controls {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .control-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-on {
+            background: rgba(0, 255, 156, 0.1);
+            border-color: rgba(0, 255, 156, 0.3);
+            color: #00FF9C;
+        }
+
+        .btn-on:hover {
+            background: rgba(0, 255, 156, 0.2);
+            border-color: #00FF9C;
+            box-shadow: 0 4px 16px rgba(0, 255, 156, 0.3);
+        }
+
+        .btn-on.active {
+            background: #00FF9C;
+            color: #0B0F14;
+            border-color: #00FF9C;
+            box-shadow: 0 4px 20px rgba(0, 255, 156, 0.4);
+        }
+
+        .btn-off {
+            background: rgba(255, 76, 76, 0.1);
+            border-color: rgba(255, 76, 76, 0.3);
+            color: #FF4C4C;
+        }
+
+        .btn-off:hover {
+            background: rgba(255, 76, 76, 0.2);
+            border-color: #FF4C4C;
+            box-shadow: 0 4px 16px rgba(255, 76, 76, 0.3);
+        }
+
+        .btn-off.active {
+            background: #FF4C4C;
+            color: #0B0F14;
+            border-color: #FF4C4C;
+            box-shadow: 0 4px 20px rgba(255, 76, 76, 0.4);
+        }
+
+        .valve-slider-container {
+            margin-top: 1.5rem;
+        }
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .slider-label-text {
+            font-size: 0.9rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .slider-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #00E5FF;
+            font-family: 'Courier New', monospace;
+        }
+
+        .valve-input-group {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .valve-input {
+            flex: 1;
+            padding: 0.875rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 10px;
+            color: #E5E7EB;
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+            outline: none;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .valve-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #00E5FF;
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
+        }
+
+        .valve-set-btn {
+            padding: 0.875rem 1.5rem;
+            background: rgba(0, 229, 255, 0.15);
+            border: 2px solid rgba(0, 229, 255, 0.4);
+            border-radius: 10px;
+            color: #00E5FF;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .valve-set-btn:hover {
+            background: rgba(0, 229, 255, 0.25);
+            border-color: #00E5FF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 229, 255, 0.3);
+        }
+
+        .valve-set-btn:active {
+            transform: translateY(0);
+        }
+
+        .pump-section {
+            max-width: 1200px;
+            margin-bottom: 2rem;
+        }
+
+        .pump-panel {
+            background: linear-gradient(135deg, rgba(17, 24, 39, 0.95) 0%, rgba(26, 31, 46, 0.95) 100%);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .pump-panel.running {
+            border-color: rgba(0, 255, 156, 0.5);
+            box-shadow: 0 8px 32px rgba(0, 255, 156, 0.15);
+        }
+
+        .pump-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pump-title-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .pump-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(0, 255, 156, 0.2));
+            border-radius: 12px;
+            padding: 0.75rem;
+        }
+
+        .pump-status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            background: rgba(255, 76, 76, 0.15);
+            border: 1px solid rgba(255, 76, 76, 0.4);
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #FF4C4C;
+            transition: all 0.3s ease;
+        }
+
+        .pump-status-badge.running {
+            background: rgba(0, 255, 156, 0.15);
+            border-color: rgba(0, 255, 156, 0.4);
+            color: #00FF9C;
+        }
+
+        .pump-status-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #FF4C4C;
+            box-shadow: 0 0 16px #FF4C4C;
+        }
+
+        .pump-status-badge.running .pump-status-dot {
+            background: #00FF9C;
+            box-shadow: 0 0 16px #00FF9C;
+            animation: glow 1.5s ease-in-out infinite;
+        }
+
+        .pump-controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .pump-control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .control-group-title {
+            font-size: 0.9rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .pump-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .pump-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .pump-btn-start {
+            background: rgba(0, 255, 156, 0.1);
+            border-color: rgba(0, 255, 156, 0.3);
+            color: #00FF9C;
+        }
+        .pump-btn-start:hover {
+            background: rgba(0, 255, 156, 0.2);
+            border-color: #00FF9C;
+            box-shadow: 0 6px 20px rgba(0, 255, 156, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .pump-btn-start.active {
+            background: #00FF9C;
+            color: #0B0F14;
+            border-color: #00FF9C;
+            box-shadow: 0 6px 24px rgba(0, 255, 156, 0.4);
+        }
+
+        .pump-btn-stop {
+            background: rgba(255, 76, 76, 0.1);
+            border-color: rgba(255, 76, 76, 0.3);
+            color: #FF4C4C;
+        }
+
+        .pump-btn-stop:hover {
+            background: rgba(255, 76, 76, 0.2);
+            border-color: #FF4C4C;
+            box-shadow: 0 6px 20px rgba(255, 76, 76, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .pump-btn-stop.active {
+            background: #FF4C4C;
+            color: #0B0F14;
+            border-color: #FF4C4C;
+            box-shadow: 0 6px 24px rgba(255, 76, 76, 0.4);
+        }
+
+        .pump-speed-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .speed-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .speed-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00E5FF;
+            font-family: 'Courier New', monospace;
+        }
+
+        .speed-unit {
+            font-size: 0.9rem;
+            color: #9CA3AF;
+            margin-left: 0.5rem;
+        }
+
+        .pump-input-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .pump-input {
+            flex: 1;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 229, 255, 0.2);
+            border-radius: 10px;
+            color: #E5E7EB;
+            font-size: 1.25rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s ease;
+            outline: none;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .pump-input:focus {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: #00E5FF;
+            box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.1);
+        }
+
+        .pump-set-btn {
+            padding: 1rem 2rem;
+            background: rgba(0, 229, 255, 0.15);
+            border: 2px solid rgba(0, 229, 255, 0.4);
+            border-radius: 10px;
+            color: #00E5FF;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        .pump-set-btn:hover {
+            background: rgba(0, 229, 255, 0.25);
+            border-color: #00E5FF;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 229, 255, 0.3);
+        }
+
+        .pump-set-btn:active {
+            transform: translateY(0);
+        }
+
+        .frequency-display {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(0, 229, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 229, 255, 0.2);
+        }
+
+        .frequency-label {
+            font-size: 0.85rem;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .frequency-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #00E5FF;
+            font-family: 'Courier New', monospace;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .header-bar {
+                padding: 1rem 1.5rem;
+            }
+
+            .dashboard-title {
+                font-size: 1.25rem;
+            }
+
+            .status-indicators {
+                gap: 1rem;
+            }
+
+            .main-content {
+                padding: 1.5rem;
+            }
+
+            .valve-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pump-controls-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .login-box {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .header-bar {
+                padding: 1rem;
+            }
+
+            .header-left, .status-indicators {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .dashboard-title {
+                font-size: 1.1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+
+            .pump-panel {
+                padding: 1.5rem;
+            }
+
+            .speed-value {
+                font-size: 2rem;
+            }
+
+            .login-container {
+                flex-direction: column;
+            }
+
+            .login-left {
+                border-right: none;
+                border-bottom: 2px solid rgba(0, 229, 255, 0.3);
+                padding: 2rem 1.5rem;
+            }
+
+            .login-icon {
+                width: 80px;
+                height: 80px;
+            }
+
+            .login-title {
+                font-size: 1.5rem;
+            }
+
+            .login-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .login-box {
+                padding: 2rem 1.5rem;
+            }
+
+            .status-indicators-login {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+    <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="app-wrapper"><!-- Login Page -->
+   <div class="login-container" id="login-page">
+    <div class="login-left">
+     <div class="login-title-section">
+      <h1 class="login-title" id="login-title">Smart &amp; Secured Water Grid System</h1>
+      <p class="login-subtitle" id="login-subtitle">Advanced SCADA Control System for Real-time Monitoring &amp; Management</p>
+      <div class="status-indicators-login">
+       <div class="status-item-login"><span>Real-time PLC Communication</span>
+       </div>
+       <div class="status-item-login"><span>Modbus TCP/IP Protocol</span>
+       </div>
+       <div class="status-item-login"><span>Secure Authentication System</span>
+       </div>
+       <div class="status-item-login"><span>24/7 Remote Monitoring</span>
+       </div>
+      </div>
+     </div>
+    </div>
+    <div class="login-box">
+     <div class="login-form-container">
+      <div class="login-header">
+       <div class="login-lock-icon">
+        <svg width="36" height="36" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="11" width="14" height="10" rx="2" stroke="#00E5FF" stroke-width="2" /> <path d="M8 11V7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7V11" stroke="#00E5FF" stroke-width="2" stroke-linecap="round" /> <circle cx="12" cy="16" r="1.5" fill="#00E5FF" />
+        </svg>
+       </div>
+       <h2 class="login-form-title">Secure System Access</h2>
+       <p class="login-form-subtitle">Enter your credentials to access the dashboard</p>
+      </div>
+      <form id="login-form">
+       <div class="form-group"><label for="username" class="form-label" id="username-label-text">Username</label> <input type="text" id="username" class="form-input" placeholder="Enter your username" required>
+       </div>
+       <div class="form-group"><label for="password" class="form-label" id="password-label-text">Password</label> <input type="password" id="password" class="form-input" placeholder="Enter your password" required>
+       </div><button type="submit" class="login-btn" id="login-btn-submit"> <span id="login-button-text">Login to System</span> </button>
+      </form>
+      <div class="login-footer">
+       <p class="login-footer-text">© 2024 Smart Water Grid System. All rights reserved.</p>
+      </div>
+     </div>
+    </div>
+   </div><!-- Dashboard -->
+   <div class="dashboard-wrapper" id="dashboard-page">
+    <header class="header-bar">
+     <div class="header-left">
+      <h1 class="dashboard-title" id="dashboard-title">Smart &amp; Secured Water Grid Dashboard</h1>
+      <div class="status-indicators">
+       <div class="status-item">
+        <div class="status-dot online"></div><span id="plc-status-text">PLC Online</span>
+       </div>
+       <div class="status-item">
+        <div class="status-dot active"></div><span id="modbus-status-text">Modbus Active</span>
+       </div>
+      </div>
+     </div>
+     <div class="header-right">
+      <div class="datetime-display" id="datetime-display"></div><button class="logout-btn" id="logout-btn">LOGOUT</button>
+     </div>
+    </header>
+    <main class="main-content">
+     <section>
+        <h2 class="section-title">Control Valves</h2>
+      <div class="valve-grid">
+       <div class="valve-card" id="valve-1-card">
+        <div class="valve-header">
+         <div class="valve-name" id="valve-1-name">
+          Valve 1
+         </div>
+         <div class="valve-status-led" id="valve-1-led"></div>
+        </div>
+        <div class="valve-controls"><button class="control-btn btn-on" id="valve-1-on">ON</button> <button class="control-btn btn-off active" id="valve-1-off">OFF</button>
+        </div>
+        <div class="valve-slider-container">
+         <div class="slider-label"><span class="slider-label-text">Opening</span> <span class="slider-value" id="valve-1-value">0%</span>
+         </div>
+         <div class="valve-input-group"><input type="number" min="0" max="100" value="0" class="valve-input" id="valve-1-input" placeholder="0-100"> <button class="valve-set-btn" id="valve-1-set">SET</button>
+         </div>
+        </div>
+       </div>
+       <div class="valve-card" id="valve-2-card">
+        <div class="valve-header">
+         <div class="valve-name" id="valve-2-name">
+          Valve 2
+         </div>
+         <div class="valve-status-led" id="valve-2-led"></div>
+        </div>
+        <div class="valve-controls"><button class="control-btn btn-on" id="valve-2-on">ON</button> <button class="control-btn btn-off active" id="valve-2-off">OFF</button>
+        </div>
+        <div class="valve-slider-container">
+         <div class="slider-label"><span class="slider-label-text">Opening</span> <span class="slider-value" id="valve-2-value">0%</span>
+         </div>
+         <div class="valve-input-group"><input type="number" min="0" max="100" value="0" class="valve-input" id="valve-2-input" placeholder="0-100"> <button class="valve-set-btn" id="valve-2-set">SET</button>
+         </div>
+        </div>
+       </div>
+       <div class="valve-card" id="valve-3-card">
+        <div class="valve-header">
+         <div class="valve-name" id="valve-3-name">
+          Valve 3
+         </div>
+         <div class="valve-status-led" id="valve-3-led"></div>
+        </div>
+        <div class="valve-controls"><button class="control-btn btn-on" id="valve-3-on">ON</button> <button class="control-btn btn-off active" id="valve-3-off">OFF</button>
+        </div>
+        <div class="valve-slider-container">
+         <div class="slider-label"><span class="slider-label-text">Opening</span> <span class="slider-value" id="valve-3-value">0%</span>
+         </div>
+         <div class="valve-input-group"><input type="number" min="0" max="100" value="0" class="valve-input" id="valve-3-input" placeholder="0-100"> <button class="valve-set-btn" id="valve-3-set">SET</button>
+         </div>
+        </div>
+       </div>
+      </div>
+     </section>
+     <section class="pump-section">
+      <h2 class="section-title" id="pump-title">Pump / VFD Control</h2>
+      <div class="pump-panel" id="pump-panel">
+       <div class="pump-header">
+        <div class="pump-title-group">
+         <div class="pump-icon">
+          <svg width="32" height="32" viewbox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="#00E5FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /> <path d="M12 22V12" stroke="#00FF9C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /> <path d="M2 7L12 12L22 7" stroke="#00E5FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /> <circle cx="12" cy="12" r="3" stroke="#00FF9C" stroke-width="2" />
+          </svg>
+         </div>
+         <div>
+          <div class="section-title" style="margin: 0;">
+           Main Pump Station
+          </div>
+         </div>
+        </div>
+        <div class="pump-status-badge" id="pump-status-badge">
+         <div class="pump-status-dot"></div><span id="pump-status-text">STOPPED</span>
+        </div>
+       </div>
+       <div class="pump-controls-grid">
+        <div class="pump-control-group">
+         <div class="control-group-title">
+          Pump Control
+         </div>
+         <div class="pump-buttons"><button class="pump-btn pump-btn-start" id="pump-start">START</button> <button class="pump-btn pump-btn-stop active" id="pump-stop">STOP</button>
+         </div>
+        </div>
+        <div class="pump-control-group">
+         <div class="control-group-title">
+          Speed Control
+         </div>
+         <div class="pump-speed-container">
+          <div class="speed-display"><span class="speed-value" id="pump-speed-value">0<span class="speed-unit">%</span></span>
+          </div>
+          <div class="pump-input-group"><input type="number" min="0" max="100" value="0" class="pump-input" id="pump-input" placeholder="0-100"> <button class="pump-set-btn" id="pump-set-speed">SET SPEED</button>
+          </div>
+         </div>
+        </div>
+        <div class="pump-control-group">
+         <div class="control-group-title">
+          VFD Output
+         </div>
+         <div class="frequency-display">
+          <div class="frequency-label">
+           Frequency
+          </div>
+          <div class="frequency-value" id="frequency-value">
+           0.0 Hz
+            </div>
+         </div>
+         <div class="frequency-display" style="margin-top: 0.75rem;">
+          <div class="frequency-label">
+           Estimated RPM
+          </div>
+          <div class="frequency-value" id="rpm-value">
+           0
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </section>
+    </main>
+   </div>
+  </div>
+  <script>
+  const TS_KEY = "4F3KU51LKWBATWXW";
+        const defaultConfig = {
+            login_title: "Smart & Secured Water Grid",
+            login_subtitle: "Advanced SCADA Control System\nReal-time Monitoring & Management",
+            username_label: "Username",
+            password_label: "Password",
+            login_button_text: "Login to System",
+            dashboard_title: "Smart & Secured Water Grid Dashboard",
+            plc_status_text: "PLC Online",
+            modbus_status_text: "Modbus Active",
+            logout_button_text: "LOGOUT",
+            valve_1_name: "Valve 1",
+            valve_2_name: "Valve 2",
+            valve_3_name: "Valve 3",
+            on_button_text: "ON",
+            off_button_text: "OFF",
+            pump_title: "Pump / VFD Control",
+            start_button_text: "START",
+            stop_button_text: "STOP"
+        };
+
+        const loginForm = document.getElementById('login-form');
+        const loginPage = document.getElementById('login-page');
+        const dashboardPage = document.getElementById('dashboard-page');
+
+        loginForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+
+    // 🔐 FIXED CREDENTIALS
+    const SYSTEM_USER = "WDS190";
+    const SYSTEM_PASS = "WDS@190";
+
+if (username === SYSTEM_USER && password === SYSTEM_PASS) {
+    loginPage.classList.add('hidden');
+    dashboardPage.classList.add('active');
+    startDashboard();
+} else {
+    alert("❌ Invalid Username or Password");
+}
+});
+
+const valveStates = {
+    1: { active: false, opening: 0 },
+    2: { active: false, opening: 0 },
+    3: { active: false, opening: 0 }
+};
+
+const pumpState = {
+    running: false,
+    speed: 0
+};
+
+let datetimeInterval;
+
+function startDashboard() {
+    updateDateTime();
+    datetimeInterval = setInterval(updateDateTime, 1000);
+}
+
+function updateDateTime() {
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' });
+    const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    document.getElementById('datetime-display').textContent = `${dateStr} | ${timeStr}`;
+}
+
+function setupValveControls(valveNum) {
+    const onBtn = document.getElementById(`valve-${valveNum}-on`);
+    const offBtn = document.getElementById(`valve-${valveNum}-off`);
+    const input = document.getElementById(`valve-${valveNum}-input`);
+    const setBtn = document.getElementById(`valve-${valveNum}-set`);
+    const valueDisplay = document.getElementById(`valve-${valveNum}-value`);
+    const led = document.getElementById(`valve-${valveNum}-led`);
+    const card = document.getElementById(`valve-${valveNum}-card`);
+
+    onBtn.addEventListener('click', () => {
+        valveStates[valveNum].active = true;
+        onBtn.classList.add('active');
+        offBtn.classList.remove('active');
+        led.classList.add('active');
+card.classList.add('active');
+
+fetch(`/valve/on?id=${valveNum}`);
+});
+
+offBtn.addEventListener('click', () => {
+    valveStates[valveNum].active = false;
+    offBtn.classList.add('active');
+    onBtn.classList.remove('active');
+    led.classList.remove('active');
+    card.classList.remove('active');
+    input.value = 0;
+    valueDisplay.textContent = '0%';
+    valveStates[valveNum].opening = 0;
+
+    fetch(`/valve/off?id=${valveNum}`);
+    fetch(`https://api.thingspeak.com/update?api_key=${TS_KEY}&field${valveNum}=0`);
+});
+
+setBtn.addEventListener('click', () => {
+    let value = parseInt(input.value) || 0;
+    if (value < 0) value = 0;
+    if (value > 100) value = 100;
+
+    input.value = value;
+    valveStates[valveNum].opening = value;
+    valueDisplay.textContent = `${value}%`;
+
+    fetch(`/valve/set?id=${valveNum}&value=${value}`);
+    fetch(`https://api.thingspeak.com/update?api_key=${TS_KEY}&field${valveNum}=${value}`);
+
+    if (value > 0 && !valveStates[valveNum].active) {
+        onBtn.click();
+    } else if (value === 0) {
+        offBtn.click();
+    }
+});
+}
+
+setupValveControls(1);
+setupValveControls(2);
+setupValveControls(3);
+
+const pumpStartBtn = document.getElementById('pump-start');
+const pumpStopBtn = document.getElementById('pump-stop');
+const pumpInput = document.getElementById('pump-input');
+const pumpSetBtn = document.getElementById('pump-set-speed');
+const pumpSpeedValue = document.getElementById('pump-speed-value');
+const frequencyValue = document.getElementById('frequency-value');
+const rpmValue = document.getElementById('rpm-value');
+const pumpStatusBadge = document.getElementById('pump-status-badge');
+const pumpStatusText = document.getElementById('pump-status-text');
+const pumpPanel = document.getElementById('pump-panel');
+
+pumpStartBtn.addEventListener('click', () => {
+    pumpState.running = true;
+    pumpStartBtn.classList.add('active');
+    pumpStopBtn.classList.remove('active');
+    pumpStatusBadge.classList.add('running');
+    pumpPanel.classList.add('running');
+    pumpStatusText.textContent = 'RUNNING';
+
+    fetch('/pump/start');
+});
+
+pumpStopBtn.addEventListener('click', () => {
+    pumpState.running = false;
+    pumpStopBtn.classList.add('active');
+    pumpStartBtn.classList.remove('active');
+    pumpStatusBadge.classList.remove('running');
+    pumpPanel.classList.remove('running');
+    pumpStatusText.textContent = 'STOPPED';
+    pumpInput.value = 0;
+    pumpSpeedValue.innerHTML = `0<span class="speed-unit">%</span>`;
+    frequencyValue.textContent = '0.0 Hz';
+    rpmValue.textContent = '0';
+    pumpState.speed = 0;
+
+    fetch('/pump/stop');
+    fetch(`https://api.thingspeak.com/update?api_key=${TS_KEY}&field4=0`);
+});
+
+pumpSetBtn.addEventListener('click', () => {
+    let value = parseInt(pumpInput.value) || 0;
+    value = Math.max(0, Math.min(100, value));
+
+    pumpInput.value = value;
+    pumpState.speed = value;
+    pumpSpeedValue.innerHTML = `${value}<span class="speed-unit">%</span>`;
+
+    frequencyValue.textContent = `${(value * 0.5).toFixed(1)} Hz`;
+    rpmValue.textContent = Math.round(value * 15);
+
+    // PLC
+    fetch(`/pump/set?value=${value}`);
+
+    // Cloud
+    fetch(`https://api.thingspeak.com/update?api_key=${TS_KEY}&field4=${value}`);
+
+    if (value > 0 && !pumpState.running) pumpStartBtn.click();
+if (value === 0) pumpStopBtn.click();
+});
+
+// ❌ REMOVED: stray pump STOP + duplicate logic
+// ❌ REMOVED: duplicate pumpSetBtn.addEventListener
+// ❌ REMOVED: YOUR_TS_KEY usage
+
+// ---------------- LOGOUT LOGIC (SAFE & UNCHANGED) ----------------
+document.getElementById('logout-btn').addEventListener('click', () => {
+
+    const confirmLogout = document.createElement('div');
+    confirmLogout.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, rgba(17,24,39,0.98), rgba(26,31,46,0.98));
+        backdrop-filter: blur(20px);
+        padding: 2rem;
+        border-radius: 16px;
+        border: 1px solid rgba(0,229,255,0.3);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        z-index: 1000;
+        text-align: center;
+    `;
+
+    confirmLogout.innerHTML = `
+        <div style="font-size:1.25rem;font-weight:700;color:#E5E7EB;margin-bottom:1rem;">
+            Confirm Logout
+        </div>
+        <div style="color:#9CA3AF;margin-bottom:1.5rem;">
+            Are you sure you want to logout?
+        </div>
+        <div style="display:flex;gap:1rem;justify-content:center;">
+            <button id="confirm-yes"
+                style="padding:0.75rem 2rem;background:rgba(0,229,255,0.2);
+                border:1px solid #00E5FF;border-radius:8px;color:#00E5FF;
+                font-weight:700;cursor:pointer;">YES</button>
+
+            <button id="confirm-no"
+                style="padding:0.75rem 2rem;background:rgba(255,76,76,0.2);
+                border:1px solid #FF4C4C;border-radius:8px;color:#FF4C4C;
+                font-weight:700;cursor:pointer;">NO</button>
+        </div>
+    `;
+
+    const backdrop = document.createElement('div');
+    backdrop.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.7);
+        z-index: 999;
+    `;
+
+    document.body.appendChild(backdrop);
+    document.body.appendChild(confirmLogout);
+
+    document.getElementById('confirm-yes').addEventListener('click', () => {
+
+        clearInterval(datetimeInterval);
+
+        for (let i = 1; i <= 3; i++) {
+            document.getElementById(`valve-${i}-off`).click();
+            document.getElementById(`valve-${i}-input`).value = 0;
+            document.getElementById(`valve-${i}-value`).textContent = '0%';
+        }
+
+        pumpStopBtn.click();
+        pumpInput.value = 0;
+
+        dashboardPage.classList.remove('active');
+        loginPage.classList.remove('hidden');
+
+        document.getElementById('username').value = '';
+        document.getElementById('password').value = '';
+
+        backdrop.remove();
+        confirmLogout.remove();
+    });
+
+    document.getElementById('confirm-no').addEventListener('click', () => {
+        backdrop.remove();
+        confirmLogout.remove();
+    });
+});
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9c4042f351f23d42',t:'MTc2OTQzMzE0Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
